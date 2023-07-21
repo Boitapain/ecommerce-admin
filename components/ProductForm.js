@@ -1,25 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import Spinner from "./Spinner";
+import { ReactSortable } from "react-sortablejs";
 
 export default function ProductForm({
     _id,
     title:existingTitle, 
     description:existingDescription, 
     price:existingPrice,
-    images,
+    images:existingImages,
+    category:assignedCategory,
 }) {
     const [title,setTitle] = useState(existingTitle || '');
     const [description, setDescription] = useState(existingDescription || '');
+    const [category, setCategory] = useState(assignedCategory || '');
     const [price, setPrice] = useState(existingPrice || '');
-    const [goToProduct, setGoToProduct] = useState(false) 
+    const [images, setImages] = useState(existingImages || []);
+    const [goToProduct, setGoToProduct] = useState(false); 
+    const [isUploading, setIsUploading] = useState(false);
     const router = useRouter();
 
+    const [categories, setCategories] = useState([]);
+    useEffect(() => {
+        axios.get("/api/categories").then(result => {
+            setCategories(result.data);
+        });
+    }, []);
+
     async function saveProduct(ev){
-        const data = {_id,title, description, price};
+        const data = {_id,title, description, price, images, category};
         ev.preventDefault();
         if(_id){
             await axios.put('/api/products',{...data,_id});
+            setGoToProduct(true);
         }
         else{
             await axios.post('/api/products', data);
@@ -34,15 +48,31 @@ export default function ProductForm({
     async function uploadImages(ev){
         const files = ev.target?.files
         if(files?.length>0){
+            setIsUploading(true);
             const data = new FormData();
             for(const file of files){
                 data.append('file', file );
             }
             const res = await axios.post('/api/upload',data);
-            console.log(res.data);
+            setImages(oldImages => {
+                return [...oldImages, ...res.data.links];
+            });
+            setIsUploading(false);
         }
-        else{
-            console.log(ev.target.files)
+    }
+
+    function updateImagesOrder(images){
+        setImages(images);
+    }
+
+    const propertiesToFill = [];
+    if (categories.length>0 && category) {
+        let catInfo = categories.find(({_id}) => _id===category);
+        propertiesToFill.push(...catInfo.properties);
+        while(catInfo?.parent?._id){
+            const parentCat = categories.find(({_id}) => _id===catInfo?.parent?._id);
+            propertiesToFill.push(...parentCat.properties);
+            catInfo = parentCat;
         }
     }
 
@@ -55,11 +85,32 @@ export default function ProductForm({
                 value={title} 
                 onChange={ev => setTitle(ev.target.value)}/>
 
-            <label>
-                Photos
-            </label>
-            <div className="mb-2">
-                <label className="w-24 h-24 cursor-pointer
+            <label>Category</label>
+            <select value={category} onChange={ev => setCategory(ev.target.value)}>
+                <option value="">Uncategorized</option>
+                {categories.length>0 && categories.map(c => (
+                    <option value={c._id}>{c.name}</option>
+                ))}
+            </select>
+            {propertiesToFill.length>0 && propertiesToFill.map(p => (
+                <div>{p.name}</div>
+            ))}
+
+            <label>Photos</label>
+            <div className="mb-2 flex flex-wrap gap-2">
+                <ReactSortable list={images} className="flex flex-wrap gap-2" setList={updateImagesOrder}>
+                {!!images?.length && images.map(link => (
+                    <div key={link} className=" h-24">
+                        <img src={link} alt="" className="rounded-lg"/>
+                    </div>
+                ))}
+                </ReactSortable>
+                {isUploading && (
+                    <div className="h-24 p-1 flex items-center rounded-md">
+                        <Spinner/>
+                    </div>
+                )}
+                <label className=" w-24 h-24 cursor-pointer
                 text-center text-sm gap-1 text-gray-500 
                 flex flex-col items-center justify-center 
                 rounded-lg bg-gray-200">
@@ -71,10 +122,8 @@ export default function ProductForm({
                     </div>
                     <input type="file" onChange={uploadImages} className="hidden"/>
                 </label>
-                {!images?.lenght &&(
-                    <div>No photos for this product</div>
-                )}
             </div>
+
             <label>Description</label>
             <textarea 
                 placeholder="description"
