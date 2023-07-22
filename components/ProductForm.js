@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { isValidElement, useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Spinner from "./Spinner";
@@ -11,10 +11,12 @@ export default function ProductForm({
     price:existingPrice,
     images:existingImages,
     category:assignedCategory,
+    properties:assignedProperties,
 }) {
     const [title,setTitle] = useState(existingTitle || '');
     const [description, setDescription] = useState(existingDescription || '');
     const [category, setCategory] = useState(assignedCategory || '');
+    const [productProperties, setProductProperties] = useState(assignedProperties || {});
     const [price, setPrice] = useState(existingPrice || '');
     const [images, setImages] = useState(existingImages || []);
     const [goToProduct, setGoToProduct] = useState(false); 
@@ -29,7 +31,10 @@ export default function ProductForm({
     }, []);
 
     async function saveProduct(ev){
-        const data = {_id,title, description, price, images, category};
+        const data = {
+            _id,title,description,price,images,category,
+            properties:productProperties,
+        };
         ev.preventDefault();
         if(_id){
             await axios.put('/api/products',{...data,_id});
@@ -65,6 +70,15 @@ export default function ProductForm({
         setImages(images);
     }
 
+    function setProductProp(propName, value){
+        setProductProperties(prev => {
+            const newProductProps = {...prev};
+            newProductProps[propName] = value;
+            return newProductProps;
+
+        })
+    }
+
     const propertiesToFill = [];
     if (categories.length>0 && category) {
         let catInfo = categories.find(({_id}) => _id===category);
@@ -93,7 +107,18 @@ export default function ProductForm({
                 ))}
             </select>
             {propertiesToFill.length>0 && propertiesToFill.map(p => (
-                <div>{p.name}</div>
+                <div className="flex gap-1">
+                    <div>{p.name}</div>
+                    <select value={productProperties[p.name]} 
+                        onChange={ev => 
+                        setProductProp(p.name, ev.target.value)
+                        }
+                    >
+                        {p.values.map(v => (
+                            <option value={v}>{v}</option>
+                        ))}
+                    </select>
+                </div>
             ))}
 
             <label>Photos</label>
