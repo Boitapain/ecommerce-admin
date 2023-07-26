@@ -28,7 +28,6 @@ export default function Nav({show}) {
         <div className="mb-4 mr-4">
           <Logo />
         </div>
-        
         <nav className="flex flex-col gap-2">
           <Link href={"/"} className={pathname === "/" ? activeLink : inactiveLink}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={pathname === "/" ? activeIcon : inactiveIcon}>

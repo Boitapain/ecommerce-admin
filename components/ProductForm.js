@@ -148,7 +148,7 @@ export default function ProductForm({
                     <div>
                         Add image
                     </div>
-                    <input type="file" onChange={uploadImages} className="hidden"/>
+                    <input type="file" accept="image/png" onChange={uploadImages} className="hidden"/>
                 </label>
             </div>
 
