@@ -1,5 +1,7 @@
 This is a Next.js project using Taylwind.css and MongoDB to make an e-commerce admin page. 
 
+In case you want to run it, use `yarn dev` :) 
+
 ## Connection
 This project uses NextAuth.js library to handle the connection with the Google Auth provider.
 
@@ -21,7 +23,7 @@ The product page work like all other pages, using models made with Mongoose libr
 <b>/api/products.js</b>
 <br />
 <img width="345" alt="image" src="https://github.com/Boitapain/ecommerce-admin/assets/108083652/22af5703-fdcc-4d24-80b2-818c29ecb70a">
-The data are all sent directly to the database thanks to the mongooseConnect function.
+<br/>The data are all sent directly to the database thanks to the `mongooseConnect()` function.
 <br /><br />
 <i>Image of the form to add/edit a product</i>
 <img width="1050" alt="image" src="https://github.com/Boitapain/ecommerce-admin/assets/108083652/7cad6464-859b-4cb3-9eee-3bfeb6b5632e">
