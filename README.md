@@ -1,38 +1,40 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is a Next.js project using Taylwind.css and MongoDB to make an e-commerce admin page. 
 
-## Getting Started
+## Connection
+This project uses NextAuth.js library to handle the connection with the Google Auth provider.
 
-First, run the development server:
+<img width="327" align="left" alt="image" src="https://github.com/Boitapain/ecommerce-admin/assets/108083652/f4f69f76-edfc-45d3-a1c6-963b2744a3af">Here we are using a combination of MongoDB and nextAuth libraries to create a new account inside our MongoDB database.<br/>We send a request to use google Auth and connect to our website (only if we are inside the admin list).
+<br clear="left"/>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Front page
+Here is the front page that uses elements inside the [/components] folder to display each piece 
+<img width="1264" alt="image" src="https://github.com/Boitapain/ecommerce-admin/assets/108083652/2124f8a2-ca6e-465e-892a-9cd950a2cb60">
+There are currently 3 pages working, Products (to manage the products inside the database), Categories (to manage the Categories inside the database), and Orders (to display the orders made on the front page).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Products page
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+The product page work like all other pages, using models made with Mongoose library and an API file to handle the calls made by the client.
+<b>/models/Product.js</b>
+<br />
+<img width="215" alt="image" src="https://github.com/Boitapain/ecommerce-admin/assets/108083652/be926065-da11-405e-8166-5d6a13080e68">
+<br />
+<b>/api/products.js</b>
+<br />
+<img width="345" alt="image" src="https://github.com/Boitapain/ecommerce-admin/assets/108083652/22af5703-fdcc-4d24-80b2-818c29ecb70a">
+The data are all sent directly to the database thanks to the mongooseConnect function.
+<br /><br />
+<i>Image of the form to add/edit a product</i>
+<img width="1050" alt="image" src="https://github.com/Boitapain/ecommerce-admin/assets/108083652/7cad6464-859b-4cb3-9eee-3bfeb6b5632e">
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+### Categories page
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+This page is made to handle the categories associated with a product.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+<img width="1052" alt="image" src="https://github.com/Boitapain/ecommerce-admin/assets/108083652/be69f0a0-11a8-4a87-abdc-f26ed46fa332">
 
-## Learn More
+### Orders page
 
-To learn more about Next.js, take a look at the following resources:
+This page is here to display all the orders made by clients.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+<img width="1053" alt="image" src="https://github.com/Boitapain/ecommerce-admin/assets/108083652/0bd5e3c6-bc13-482a-8873-1c863baf9a15">
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
